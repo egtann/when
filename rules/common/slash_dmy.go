@@ -29,6 +29,11 @@ func getDays(year, month int) int {
 	if (year-2000)%4 == 0 && month == 2 {
 		return 29
 	}
+
+	// prevent a panic
+	if month >= len(MONTHS_DAYS) {
+		return -1
+	}
 	return MONTHS_DAYS[month]
 }
 
@@ -56,6 +61,13 @@ func SlashDMY(s rules.Strategy) rules.Rule {
 
 			if day == 0 {
 				return false, nil
+			}
+
+			// they're euro-backwards
+			if month > 12 && day <= 12 {
+				tmpMonth := month
+				month = day
+				day = tmpMonth
 			}
 
 		WithYear:
